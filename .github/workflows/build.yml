@@ -1,0 +1,52 @@
+name: Create and Update Folder Archives
+
+on:
+  workflow_dispatch:
+
+jobs:
+  archive_folders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: 📦 Create dated .tar.gz archives
+        id: create_archives
+        run: |
+          CURRENT_DATE=$(date +%Y%m%d)
+          
+          echo "Starting archive process for top-level folders..."
+          
+          # Find all top-level directories (excluding hidden ones and the .git folder)
+          find . -maxdepth 1 -type d ! -name '.*' | while read -r DIR; do
+            FOLDER_NAME=$(basename "$DIR")
+            
+            # Skip the root directory itself (represented by '.')
+            if [ "$FOLDER_NAME" == "." ]; then
+              continue
+            fi
+
+            ARCHIVE_NAME="${FOLDER_NAME}-${CURRENT_DATE}.tar.gz"
+            
+            echo "--- Processing folder: ${FOLDER_NAME} ---"
+            
+            # 1. Remove any OLD archives with the same folder name in the root
+            echo "   -> Removing old archives matching '${FOLDER_NAME}-*.tar.gz'..."
+            find . -maxdepth 1 -type f -name "${FOLDER_NAME}-*.tar.gz" -delete
+            
+            # 2. Create the new .tar.gz file in the root directory
+            # tar -czf <archive_name> -C <parent_dir_of_archive_content> <content_to_archive>
+            tar -czf "${ARCHIVE_NAME}" -C . "${FOLDER_NAME}"
+            
+            echo "   -> Created new archive: ${ARCHIVE_NAME}"
+          done
+          
+          echo "Archive process complete."
+
+      - name: 📤 Upload updated archives to the repository
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'CI: Update folder archives for deploy [skip ci]'
+          # CORRECTED: Use file_pattern instead of files
+          file_pattern: '*.tar.gz' 
+          commit_options: '--no-verify'
