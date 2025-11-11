@@ -13,3 +13,11 @@ To install **Mount Manager**, execute the following command in your terminal:
 ```sh
 wget -q -O - https://github.com/ahmedmoselhi/enigma2-plugins-miscellaneous/raw/refs/heads/master/mountmanager.sh | /bin/bash
 ```
+
+# 💻 Device Manager
+A plugin that manages **storage devices** (format/change partitions and type/fast & fixed mount and unmount).
+## 🛠️ Installation
+To install **Device Manager**, execute the following command in your terminal:
+```sh
+wget -q -O - https://github.com/ahmedmoselhi/enigma2-plugins-miscellaneous/raw/refs/heads/master/devicemanager.sh | /bin/bash
+```
