@@ -6,7 +6,8 @@ DEST_DIR="/usr/lib/enigma2/python/Plugins/SystemPlugins"
 API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/"
 
 echo "1. Searching for the correct archive name..."
-ARCHIVE_NAME=$(curl -s $API_URL | jq -r ".[] | select(.name | startswith(\"$FILE_PREFIX\") and endswith(\".tar.gz\")) | .name" | head -n 1)
+# *** FIX: Using standard grep and cut/sed instead of 'grep -P' ***
+ARCHIVE_NAME=$(curl -s "$API_URL" | grep -o '"name": "[^"]*'"$FILE_PREFIX"'.*\.tar\.gz"' | head -n 1 | sed -e 's/.*"name": "//' -e 's/"$//')
 
 if [ -z "$ARCHIVE_NAME" ]; then
     echo "Error: Could not find any file starting with '$FILE_PREFIX' and ending with '.tar.gz'"
