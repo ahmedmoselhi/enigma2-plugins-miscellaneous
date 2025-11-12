@@ -21,3 +21,11 @@ To install **Device Manager**, execute the following command in your terminal:
 ```sh
 wget -q -O - https://github.com/ahmedmoselhi/enigma2-plugins-miscellaneous/raw/refs/heads/master/devicemanager.sh | /bin/bash
 ```
+
+# 🔄 Lamedb Merger
+A plugin that **merges a new lamedb file (enigma2 channel list)** with an existing one.
+## 🛠️ Installation
+To install **Lamedb Merger**, execute the following command in your terminal:
+```sh
+wget -q -O - https://github.com/ahmedmoselhi/enigma2-plugins-miscellaneous/raw/refs/heads/master/lamedbmerger.sh | /bin/bash
+```
