@@ -13,17 +13,20 @@ from Screens.MessageBox import MessageBox
 from threading import Thread
 from enigma import *
 from Components.Console import Console
-import os, sys
+import os
+import sys
 
 doit = True
 PlugLoadInstance = None
+
 
 def woWebIf(session):
     try:
         from Plugins.Extensions.OpenWebif.httpserver import HttpdStart
         HttpdStart(session)
-    except:
+    except BaseException:
         print_exc()
+
 
 class PlugLoadConfig(Screen):
 
@@ -31,14 +34,19 @@ class PlugLoadConfig(Screen):
         try:
             Screen.__init__(self, session)
             self.session = session
-            self['actions'] = ActionMap(['OkCancelActions', 'ColorActions'], {'green': (self.cancel),
-               'red': (self.cancel),
-               'cancel': (self.cancel),
-               'ok': (self.keyOK)}, -1)
-            self['text'] = Label(_('Press OK to reload the plugins manually!\nPress EXIT to cancel!'))
+            self['actions'] = ActionMap(
+                [
+                    'OkCancelActions', 'ColorActions'], {
+                    'green': (
+                        self.cancel), 'red': (
+                        self.cancel), 'cancel': (
+                        self.cancel), 'ok': (
+                            self.keyOK)}, -1)
+            self['text'] = Label(
+                _('Press OK to reload the plugins manually!\nPress EXIT to cancel!'))
             skin = '<screen position="center,center" size="400,75" title="PlugLoad" >\n\t\t\t<widget name="text" position="0,0" zPosition="1" size="400,75" font="Regular;20" valign="center" halign="center" transparent="1" />\n\t\t\t</screen>'
             self.skin = skin
-        except:
+        except BaseException:
             print_exc()
             self.close(None)
 
@@ -49,11 +57,16 @@ class PlugLoadConfig(Screen):
         try:
             system('/usr/bin/plugload.sh py')
             plugins.readPluginList('/usr/lib/enigma2/python/Plugins/')
-            if os.path.exists('/usr/lib/enigma2/python/Plugins/Extensions/OpenWebif') is True:
+            if os.path.exists(
+                    '/usr/lib/enigma2/python/Plugins/Extensions/OpenWebif') is True:
                 woWebIf(self.session)
-            self.session.open(MessageBox, _('The plugins were reloaded successfully!'), MessageBox.TYPE_INFO, timeout=3)
+            self.session.open(
+                MessageBox,
+                _('The plugins were reloaded successfully!'),
+                MessageBox.TYPE_INFO,
+                timeout=3)
             self.close()
-        except:
+        except BaseException:
             print_exc()
 
 
@@ -67,9 +80,10 @@ class PlugLoad1(Thread):
         try:
             system('/usr/bin/plugload.sh py')
             plugins.readPluginList('/usr/lib/enigma2/python/Plugins/')
-            if path.exists('/usr/lib/enigma2/python/Plugins/Extensions/OpenWebif') is True:
+            if path.exists(
+                    '/usr/lib/enigma2/python/Plugins/Extensions/OpenWebif') is True:
                 woWebIf(self.session)
-        except:
+        except BaseException:
             print_exc()
 
 
@@ -80,8 +94,9 @@ class PlugLoad:
             self.session = session
             self.service = None
             self.onClose = []
-            self.__event_tracker = ServiceEventTracker(screen=self, eventmap={(iPlayableService.evUpdatedInfo): (self.__evUpdatedInfo)})
-        except:
+            self.__event_tracker = ServiceEventTracker(screen=self, eventmap={(
+                iPlayableService.evUpdatedInfo): (self.__evUpdatedInfo)})
+        except BaseException:
             print_exc()
 
     def __evUpdatedInfo(self):
@@ -93,7 +108,7 @@ class PlugLoad:
                 if service is not None:
                     ret = PlugLoad1(self.session)
                     ret.start()
-        except:
+        except BaseException:
             print_exc()
 
 
@@ -108,6 +123,14 @@ def openconfig(session, **kwargs):
 
 
 def Plugins(**kwargs):
-    return [PluginDescriptor(where=[PluginDescriptor.WHERE_SESSIONSTART], fnc=main),
-     PluginDescriptor(name=_('PlugLoad'), description=_('Load Plugins'), where=[
-      PluginDescriptor.WHERE_PLUGINMENU], fnc=openconfig)]
+    return [
+        PluginDescriptor(
+            where=[
+                PluginDescriptor.WHERE_SESSIONSTART],
+            fnc=main),
+        PluginDescriptor(
+            name=_('PlugLoad'),
+            description=_('Load Plugins'),
+            where=[
+                PluginDescriptor.WHERE_PLUGINMENU],
+            fnc=openconfig)]

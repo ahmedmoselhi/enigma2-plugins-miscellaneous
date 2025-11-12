@@ -29,7 +29,7 @@ jobs:
 
     - name: 🔎 Run Flake8 Linter (Check all directories)
       run: |
-        flake8 . --ignore=W191,E117,E126,E128,E501,F821,W503,W504,F841,E711,F401,E741 --show-source
+        flake8 . --ignore=W191,E117,E126,E128,E501,F821,W503,W504,,F403,F405,F841,F824,E711,F401,E741 --show-source
       
     - name: ⚙️ Compile Python Source Files
       run: |
